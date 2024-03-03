@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:web="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	metadata-complete="false" version="3.0">
+	<display-name>Meal Service Application</display-name>
+	<welcome-file-list>
+		<!--  welcome file is appended to unmapped path if mapped to default servlet -->
+		<welcome-file>/WEB-INF/default-non-exist.jsp</welcome-file>
+	</welcome-file-list>
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/WEB-INF/login.jsp</form-login-page>
+			<form-error-page>/WEB-INF/login.jsp?event=Retry</form-error-page>
+		</form-login-config>
+	</login-config>
+</web-app>

@@ -1,0 +1,52 @@
+{
+  "tableConfig":[
+    {"tableName":"rem",
+     "columns":[
+		"ID",
+		"Start time",
+		"Completion time",
+		"Email1",
+		"Name",
+		"Last modified time",
+		"First Name",
+		"Phone",
+		"Email",
+		"Last Name",
+		"Family Member 2",
+		"Family Member 3",
+		"Family Member 4",
+		"Add more Family Members",
+		"Family Member 5",
+		"Family Member 6",
+		"Family Member 7",
+		"Family Member 8",
+		"Need a Physical Meal Card",
+		"Family Members who need a Physical Card",
+		"First Name 名2",
+		"Last Name 姓2",
+		"Phone Number 电话2",
+		"Email 电邮2",
+		"Family Member 32",
+		"Family Member 42",
+		"Add more Family Members2",
+		"Family Member 52",
+		"Family Member 62",
+		"Family Member 72",
+		"Family Members who need a Physical Card2",
+		"Family Member 22",
+		"Family Member 82",
+		"Need a Physical Meal Card2",
+		"Question",
+		"Question2"
+     ],
+     "index": [
+       "Email"
+     ],
+     "converter":[{
+       "name":"Email",
+       "type":"Integer",
+       "utilClass":"some.util.class.not.implemented"
+     }]
+    }
+  ]
+}

@@ -28,8 +28,8 @@ import org.remchurch.mealservice.util.EmailService;
 
 // empty url pattern maps the context root, while / maps all non mapped path including static files
 @WebServlet(name = "MainServlet", urlPatterns = {"/Main","","/LunchOrder"}, displayName="Main", loadOnStartup = 1,initParams = @WebInitParam(name="dsName", value="jdbc/MCOS_DS"))
-@ServletSecurity(value = @HttpConstraint(transportGuarantee = TransportGuarantee.NONE, rolesAllowed={"MCOS_USER","MCOS_DEPOSIT","MCOS_ADMIN","MCOS_GUEST"}))
-@DeclareRoles({"MCOS_USER","MCOS_DEPOSIT","MCOS_ADMIN","MCOS_GUEST"})
+@ServletSecurity(value = @HttpConstraint(transportGuarantee = TransportGuarantee.NONE, rolesAllowed={"MCOS_OPERATOR","MCOS_ADMIN","MCOS_GUEST"}))
+@DeclareRoles({"MCOS_OPERATOR","MCOS_ADMIN","MCOS_GUEST"})
 public class MainServlet extends HttpServlet {
 
 	private static final String BUY = "Buy";
@@ -77,6 +77,12 @@ public class MainServlet extends HttpServlet {
 			String today = DateTimeBasedFormat.getCurrentDate();
 			request.setAttribute("startdate", today);
 			request.setAttribute("enddate", today);
+		}else if(action.equals("NewDeposit")) {
+			try {
+				request.setAttribute("lblTotal", ms.getCurrentDepositTotal(request.getUserPrincipal().getName()).toString());
+			} catch (SQLException e) {
+				log.log(Level.SEVERE, "Sql error.", e);
+			}
 		}
 		resetSession(request);
 		request.getRequestDispatcher("/WEB-INF/"+action+".jsp").forward(request, response);
@@ -89,14 +95,14 @@ public class MainServlet extends HttpServlet {
 		String action = request.getParameter("action");
 		try {
 			if(action.equals("LunchOrder")) {
-				if(request.isUserInRole("MCOS_USER")||request.isUserInRole("MCOS_ADMIN"))
+				if(request.isUserInRole("MCOS_OPERATOR")||request.isUserInRole("MCOS_ADMIN"))
 					processLunchOrder(request,status);
 				else {
 					response.sendError(403,"not authorized.");
 					return;
 				}
 			}else if(action.equals("NewDeposit")) {
-				if(request.isUserInRole("MCOS_DEPOSIT")||request.isUserInRole("MCOS_ADMIN"))
+				if(request.isUserInRole("MCOS_OPERATOR")||request.isUserInRole("MCOS_ADMIN"))
 					processNewDeposit(request,status);
 				else {
 					response.sendError(403,"not authorized.");
@@ -110,7 +116,7 @@ public class MainServlet extends HttpServlet {
 					return;
 				}
 			}else if(action.equals("Search")) {
-				if(request.isUserInRole("MCOS_ADMIN"))
+				if(request.isUserInRole("MCOS_OPERATOR")||request.isUserInRole("MCOS_ADMIN"))
 					processSearch(request,status);
 				else {
 					response.sendError(403,"not authorized.");
@@ -125,7 +131,7 @@ public class MainServlet extends HttpServlet {
 				}
 			}else if(action.equals("MyAccount")) {
 				processMyAccount(request,status);
-				response.setHeader("Refresh", "5; url=Main?action=MyAccount");
+				response.setHeader("Refresh", "15; url=Main?action=MyAccount");
 			}else if(action.equals("SetPassword")) {
 				processSetPassword(request,status);
 			}
@@ -186,7 +192,8 @@ public class MainServlet extends HttpServlet {
 		if(barcode.length()>1) {
 			if(barcode.startsWith("M")) {
 				List<Map<String, Object>> m = ms.getMember(barcode);
-
+				if(ms.getParam("WARN_CODES")!=null && ms.getParam("WARN_CODES").indexOf(barcode)>=0)
+					request.setAttribute("warning", String.format("Attention:%s", barcode));
 				if (!m.isEmpty()) {
 					resetSession(request);
 					member = m.get(0);
@@ -274,7 +281,8 @@ public class MainServlet extends HttpServlet {
 		if(barcode.length()>1) {
 			if(barcode.startsWith("M")) {
 				List<Map<String, Object>> m = ms.getMember(barcode);
-
+				if(ms.getParam("WARN_CODES")!=null && ms.getParam("WARN_CODES").indexOf(barcode)>=0)
+					request.setAttribute("warning", String.format("Attention:%s", barcode));
 				if (!m.isEmpty()) {
 					resetSession(request);
 					member = m.get(0);
@@ -451,7 +459,8 @@ public class MainServlet extends HttpServlet {
 			switch (firstBarcode) {
 			case "M":
 				List<Map<String, Object>> m = ms.getMember(barcode);
-
+				if(ms.getParam("WARN_CODES")!=null && ms.getParam("WARN_CODES").indexOf(barcode)>=0)
+					request.setAttribute("warning", String.format("Attention:%s", barcode));
 				if (!m.isEmpty()) {
 					resetSession(request);
 					member = m.get(0);

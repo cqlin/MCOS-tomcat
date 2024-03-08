@@ -7,13 +7,13 @@
 	<ul class="level1">
 		<li><a class="level1" href="${pageContext.request.contextPath}/Main?action=default">
 		<img src="Images/home-black.png" alt="" title="" class="icon" />Home</a></li>
-	<% if(request.isUserInRole("MCOS_USER") || request.isUserInRole("MCOS_ADMIN")) { %>
+	<% if(request.isUserInRole("MCOS_OPERATOR") || request.isUserInRole("MCOS_ADMIN")) { %>
 		<li><a class="level1" href="${pageContext.request.contextPath}/Main?action=LunchOrder">
 		<img src="Images/lunch-black.png" alt="" title="" class="icon" />Lunch Order</a></li>
-	<% } %>
-	<% if(request.isUserInRole("MCOS_DEPOSIT") || request.isUserInRole("MCOS_ADMIN")) { %>
 		<li><a class="level1" href="${pageContext.request.contextPath}/Main?action=NewDeposit">
 		<img src="Images/deposit-black.png" alt="" title="" class="icon" />Deposit</a></li>
+		<li><a class="level1" href="${pageContext.request.contextPath}/Main?action=Search">
+		<img src="Images/search-black.png" alt="" title="" class="icon" />Search Members</a></li>
 	<% } %>
 	<% if(request.isUserInRole("MCOS_ADMIN")) { %>
 		<li><a class="level1" href="${pageContext.request.contextPath}/Main?action=Report">
@@ -21,8 +21,6 @@
 		<li><a class="level1" href="${pageContext.request.contextPath}/Main?action=NewUser">
 		<img src="Images/account-black.png" alt="" title="" class="icon" />Add Operator</a></li>
 	<% } %>
-		<li><a class="level1" href="${pageContext.request.contextPath}/Main?action=Search">
-		<img src="Images/search-black.png" alt="" title="" class="icon" />Search Members</a></li>
 		<li><a class="level1" href="${pageContext.request.contextPath}/Main?action=MyAccount">
 		<img src="Images/account-black.png" alt="" title="" class="icon" />Account Status</a></li>
 		<li><a class="level1" href="${pageContext.request.contextPath}/Main?action=SetPassword">

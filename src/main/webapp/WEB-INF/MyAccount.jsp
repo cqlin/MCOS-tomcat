@@ -25,7 +25,7 @@
 		<input type="submit" style="display: none" /> 
 		</div>
  		<br/>  
-</form>  
+ 	<h2 style="color:red">${warning}</h2>
 <c:if test="${not empty member}">
 	<div>
 	<span id="lblTime">Before Deposit</span>
@@ -44,11 +44,13 @@
     </div>
 </c:if>
 	</div>
+</form>  
  
 <c:if test="${not empty depositHistory}">
     <h3>Recent Deposit History</h3>
     <div class="row">
 	<table class="table table-striped">
+		<caption>Recent Deposit History</caption>
 		<tr>
 			<th scope="col">NAME</th>
 			<th scope="col">Date</th>
@@ -73,6 +75,7 @@
     <h3>Recent Transactions</h3>
     <div class="row">
 	<table class="table table-striped">
+		<caption>Recent Transactions</caption>
 		<tr>
 			<th scope="col">OrderID</th>
 			<th scope="col">NAME</th>

@@ -49,6 +49,7 @@
 		</div>
 	</div>  
  
+ 	<h2 style="color:red">${warning}</h2>
     <div>
  <c:if test="${not empty member}">
 	<table class="table">

@@ -32,9 +32,7 @@
     <label for="role"> Role:  </label>
     <select name="role" id="role">
 		<option value="MCOS_GUEST">MCOS_GUEST</option>
-		<option value="MCOS_DEPOSIT">MCOS_DEPOSIT</option>
-		<option value="MCOS_USER">MCOS_USER</option>
-		<option value="MCOS_ADMIN">MCOS_ADMIN</option>
+		<option value="MCOS_OPERATOR">MCOS_OPERATOR</option>
 	</select>
 	</div>
 	<br/>

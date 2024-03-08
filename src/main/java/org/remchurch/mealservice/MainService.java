@@ -215,12 +215,17 @@ public class MainService {
 		}
 
 	}
-	public List<Map<String, Object>> getCurrentDepositTotal(String name) throws SQLException {
+	public Map<String, Object> getCurrentDepositTotal(String name) throws SQLException {
 		String sql = "select DepositType,sum(DepositAmount) total from DepositHistory where CREATE_DATE>getdate()-0.5 and USERNAME=:name group by DepositType";
 		Map<String,String> param = new HashMap<>();
 		param.put("name", name);
-		return ds.queryForList(sql,param);
+		List<Map<String, Object>> l = ds.queryForList(sql,param);
+		Map<String, Object> ret = new HashMap<>();
+		for(Map<String, Object> r:l)
+			ret.put((String)r.get("DepositType"), r.get("total"));
+		return ret;
 	}
+	
 	public List<Map<String, Object>> getOrderReport(String startdate, String enddate) throws SQLException {
 		String sql = "select o.OrderID, o.Member_ID, m.first_name+' '+m.last_name MemberName, o.Create_Date OrderDate, o.OrderAmount "
 				+ " from Orders o join member m on o.member_id = m.member_id "

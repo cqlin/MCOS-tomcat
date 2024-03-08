@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 public class EmailService {
-	private static final String UTF_8 = "UTF-8";
 	private static Map<String,String> mailTemplates = new HashMap<>();
 	private String from = null;
 	private String smtpHostName = null;
@@ -37,17 +37,17 @@ public class EmailService {
 	//432 4.3.2 Concurrent connections limit exceeded. Visit https://aka.ms/concurrent_sending
 
 	static {
-		try(Scanner scanner = new Scanner(EmailService.class.getResourceAsStream("/QRCodeEmail.html"), UTF_8)){
+		try(Scanner scanner = new Scanner(EmailService.class.getResourceAsStream("/QRCodeEmail.html"), StandardCharsets.UTF_8)){
 			mailTemplates.put("QRCodeEmail", scanner.useDelimiter("\\Z").next());
 		}catch(Exception e1){
 			e1.printStackTrace();
 		}
-		try(Scanner scanner = new Scanner(EmailService.class.getResourceAsStream("/DepositEmail.html"), UTF_8)){
+		try(Scanner scanner = new Scanner(EmailService.class.getResourceAsStream("/DepositEmail.html"), StandardCharsets.UTF_8)){
 			mailTemplates.put("DepositEmail", scanner.useDelimiter("\\Z").next());
 		}catch(Exception e1){
 			e1.printStackTrace();
 		}
-		try(Scanner scanner = new Scanner(EmailService.class.getResourceAsStream("/LunchOrderEmail.html"), UTF_8)){
+		try(Scanner scanner = new Scanner(EmailService.class.getResourceAsStream("/LunchOrderEmail.html"), StandardCharsets.UTF_8)){
 			mailTemplates.put("LunchOrderEmail", scanner.useDelimiter("\\Z").next());
 		}catch(Exception e1){
 			e1.printStackTrace();
@@ -79,7 +79,7 @@ public class EmailService {
 			props.put("mail.transport.protocol", "smtp");
 			props.put("mail.smtp.host", smtpHostName);
 			props.put("mail.smtp.port", smtpPort);
-			props.put("mail.debug", "true");
+			props.put("mail.debug", "false");
 			props.put("mail.smtp.timeout", "3000");
 			props.put("mail.smtp.connectiontimeout", "3000");
 			//enable SSL
@@ -97,7 +97,7 @@ public class EmailService {
 				session = Session.getInstance(props, auth);
 			} else
 				session = Session.getInstance(props, null);
-			session.setDebug(true);
+			session.setDebug(false);
 
 			msg = new MimeMessage(session);
 			msg.setFrom(new InternetAddress(from));
@@ -141,7 +141,7 @@ public class EmailService {
 			msg.setContent(multipart);
 
 			Transport.send(msg);
-			System.out.println(msg.getMessageID());
+			//System.out.println(msg.getMessageID());
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -158,7 +158,7 @@ public class EmailService {
 		// A new stream must be returned each time.
 		public InputStream getInputStream() throws IOException {
 			if (html == null) throw new IOException("Null HTML");
-			return new ByteArrayInputStream(html.getBytes(UTF_8));
+			return new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
 		}
 
 		public OutputStream getOutputStream() throws IOException {

@@ -25,6 +25,7 @@
 	 	<input name="memberCode" id="memberCode" type="hidden" value="${memberCode}"/>
 		</div>
  		<br/>    
+ 	<h2 style="color:red">${warning}</h2>
 <c:if test="${not empty member}">
 	<div>
 	<span id="lblTime">Before Deposit</span>
@@ -105,7 +106,7 @@
 </c:if>
 	</div>
  
- 	<span id="lblTotal" style="color:Green;">${lblTotal}</span>
+ 	<span id="lblTotal" style="color:Green;font-weight:bold">${lblTotal}</span>
 
 </form>
 <script>

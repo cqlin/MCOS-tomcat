@@ -119,7 +119,7 @@ public class RegistrationServlet  extends HttpServlet {
 	private void sendFamilyEmail(int familyId) throws SQLException {
 		String subject = "REM Lunch Account QR code";
 		List<Map<String, Object>> f = ms.getFamily(familyId);
-		String tempDir = System.getProperty("java.io.tmpdir");
+		String tempDir = System.getProperty("java.io.tmpdir")+"/";
 		URL logoUrl = RegistrationServlet.class.getResource("/rem.png");
 		for(Map<String, Object> m:f) {
 			String email = (String) m.get("familyEmail");

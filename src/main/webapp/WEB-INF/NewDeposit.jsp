@@ -49,7 +49,7 @@
 	<div class="row">
 	<div>
     <label for="txtDepositAmount">Deposit Amount: </label> 
-    <input name="txtDepositAmount" type="text" id="txtDepositAmount" />
+    <input name="txtDepositAmount" type="text" id="txtDepositAmount" pattern="[0-9.\-]+" title="dollar amount only"/>
     <select name="DepositType" id="DepositType">
 		<option value="Cash">Cash</option>
 		<option value="Check">Check</option>

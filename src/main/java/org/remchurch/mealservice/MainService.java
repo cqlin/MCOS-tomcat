@@ -1,21 +1,29 @@
 package org.remchurch.mealservice;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.remchurch.mealservice.dao.DataSourceSupport;
 import org.remchurch.mealservice.dao.NamedParameterStatement;
+import org.remchurch.mealservice.util.DateTimeBasedFormat;
 import org.remchurch.mealservice.util.EmailService;
+import org.remchurch.mealservice.util.XlsxRender;
 
 public class MainService {
 	private static final Logger logger = Logger.getLogger(MainService.class.getName());
@@ -37,9 +45,26 @@ public class MainService {
 					ms.getParam("SMTPPASS")
 					);
 			//logger.info("Temp Dir:"+System.getProperty("java.io.tmpdir"));
+
+			long initialDelaySeconds = getInitialDelaySeconds(DayOfWeek.SUNDAY.getValue(), 20, 0);
+			ms.es.getExecutor().scheduleAtFixedRate(()->ms.sendWeeklyReport(), initialDelaySeconds, 600, TimeUnit.SECONDS);
 		}
 		return ms;
 	}
+
+	private static long getInitialDelaySeconds(int dayOfWeek, int hour, int min) {
+		LocalTime targetTime = LocalTime.of(hour, min);
+		LocalTime currentTime = LocalTime.now();
+		LocalDateTime currentDateTime = LocalDateTime.now();
+		long secondsUntilTargetTime = currentTime.until(targetTime, ChronoUnit.SECONDS);
+		long daysUntilNextSunday = dayOfWeek - currentDateTime.getDayOfWeek().getValue();
+		if (daysUntilNextSunday <= 0 && secondsUntilTargetTime<=10) {
+			daysUntilNextSunday += 7;
+		}
+		long initialDelaySeconds = TimeUnit.DAYS.toSeconds(daysUntilNextSunday) + secondsUntilTargetTime;
+		return initialDelaySeconds;
+	}
+
 	private MainService(String dsName) throws SQLException {
 		ds = new DataSourceSupport(dsName);
 	}
@@ -225,7 +250,7 @@ public class MainService {
 			ret.put((String)r.get("DepositType"), r.get("total"));
 		return ret;
 	}
-	
+
 	public List<Map<String, Object>> getOrderReport(String startdate, String enddate) throws SQLException {
 		String sql = "select o.OrderID, o.Member_ID, m.first_name+' '+m.last_name MemberName, o.Create_Date OrderDate, o.OrderAmount "
 				+ " from Orders o join member m on o.member_id = m.member_id "
@@ -392,4 +417,42 @@ public class MainService {
 			return memberId;
 		}
 	}
+
+	public void sendWeeklyReport() {
+		XlsxRender render = new XlsxRender();
+		String today = DateTimeBasedFormat.getCurrentDate();
+		//today = "2024-03-10";
+		try {
+			List<Map<String, Object>> r = this.getOrderReport(today,today);
+			if(!r.isEmpty()) {
+				List<String> cols = new ArrayList<>(r.get(0).keySet());
+				render.renderReport(r, "OrderReport", cols);
+			}
+			r = this.getOrderDetailReport(today,today);
+			if(!r.isEmpty()) {
+				List<String> cols = new ArrayList<>(r.get(0).keySet());
+				render.renderReport(r, "OrderDetailReport", cols);
+			}
+			r = this.getOrderSummaryReport(today,today);
+			if(!r.isEmpty()) {
+				List<String> cols = new ArrayList<>(r.get(0).keySet());
+				render.renderReport(r, "OrderSummaryReport", cols);
+			}
+			r = this.getDepositReport(today,today);
+			if(!r.isEmpty()) {
+				List<String> cols = new ArrayList<>(r.get(0).keySet());
+				render.renderReport(r, "DepositReport", cols);
+			}
+			File file = render.writeToFile(	System.getProperty("java.io.tmpdir")+"/Report-"+today+".xlsx");
+
+			String subject = "REM lunch report "+today;
+			String email = this.getParam("REPORT_EMAIL");
+			String emailBody = subject;
+
+			es.emailAsync(email,subject,emailBody,file.getPath());
+		}catch (Exception e) {
+			logger.log(Level.SEVERE, "error sending weekly report:",e);
+		}
+	}
+
 }

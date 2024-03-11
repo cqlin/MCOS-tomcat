@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -27,13 +27,14 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 public class EmailService {
+	private static final int RETRY = 3;
 	private static Map<String,String> mailTemplates = new HashMap<>();
 	private String from = null;
 	private String smtpHostName = null;
 	private String smtpPort = null;
 	private String user = null;
 	private String password = null;
-	private ExecutorService executor = Executors.newFixedThreadPool(3);//office allow up to 3 threads
+	private ScheduledExecutorService executor;
 	//432 4.3.2 Concurrent connections limit exceeded. Visit https://aka.ms/concurrent_sending
 
 	static {
@@ -60,7 +61,14 @@ public class EmailService {
 		this.from = from;
 		this.user = user;
 		this.password = password;
+		ScheduledThreadPoolExecutor e = new ScheduledThreadPoolExecutor(3); // Executors.newScheduledThreadPool(3); 
+		e.setMaximumPoolSize(3); //office allow up to 3 threads
+		this.executor = e;
 	}
+
+	public ScheduledExecutorService getExecutor() {
+		return executor;
+	}	
 
 	public String getMailTemplate(String name) {
 		return mailTemplates.get(name);
@@ -126,7 +134,8 @@ public class EmailService {
 						messageBodyPart.setDisposition("inline");
 						String cid = "attachment"+i;
 						messageBodyPart.setContentID(cid);
-						emailBody+="<img src=\"cid:" + cid + "\" alt=\"img " + cid + "\" />";
+						if(attachment.endsWith(".png")||attachment.endsWith(".jpg"))
+							emailBody+="<img src=\"cid:" + cid + "\" alt=\"img " + cid + "\" />";
 						multipart.addBodyPart(messageBodyPart);                        
 					}
 				}
@@ -140,8 +149,15 @@ public class EmailService {
 			msg.setHeader("Content-Type","text/html; charset=\"utf-8\"");
 			msg.setContent(multipart);
 
-			Transport.send(msg);
-			//System.out.println(msg.getMessageID());
+			for(int i=0; i<RETRY; i++)
+				try {
+					Transport.send(msg);
+					//System.out.println(msg.getMessageID());
+					break;
+				} catch(Exception e){
+					e.printStackTrace();
+					Thread.sleep(1000L*(i+1));
+				}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -172,7 +188,5 @@ public class EmailService {
 		public String getName() {
 			return "JAF text/html dataSource to send e-mail only";
 		}
-	}	
-
-
+	}
 }

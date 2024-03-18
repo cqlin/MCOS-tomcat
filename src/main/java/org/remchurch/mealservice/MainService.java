@@ -47,7 +47,7 @@ public class MainService {
 			//logger.info("Temp Dir:"+System.getProperty("java.io.tmpdir"));
 
 			long initialDelaySeconds = getInitialDelaySeconds(DayOfWeek.SUNDAY.getValue(), 20, 0);
-			ms.es.getExecutor().scheduleAtFixedRate(()->ms.sendWeeklyReport(), initialDelaySeconds, 600, TimeUnit.SECONDS);
+			ms.es.getExecutor().scheduleAtFixedRate(()->ms.sendWeeklyReport(), initialDelaySeconds, 7L*24*60*60, TimeUnit.SECONDS);
 		}
 		return ms;
 	}

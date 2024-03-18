@@ -12,7 +12,7 @@
 <div class="col-md-6">
 
      <h2>Deposit: &nbsp;&nbsp;&nbsp;&nbsp; Message:<span id="lblStatus"></span> </h2><br/>
-<form id="form1" method="post" action="${pageContext.request.contextPath}/Main?action=NewDeposit">
+<form id="form1" method="post" action="${pageContext.request.contextPath}/Main?action=NewDeposit" autocomplete="off">
     <span id="lblStatus" style="color:${status.color};font-weight:bold"> ${status.status}</span> 
     <span id="lblMessage" style="color:${status.color}">${status.message}</span><br/>
 	<span id="lblError" style="color:orange">${status.error}</span><br/>

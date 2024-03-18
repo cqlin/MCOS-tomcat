@@ -12,7 +12,7 @@
 <div class="col-md-6">
 
     <h2>Deposit Balance and Recent Transactions</h2>
-<form id="form1" method="post" action="${pageContext.request.contextPath}/Main?action=MyAccount">
+<form id="form1" method="post" action="${pageContext.request.contextPath}/Main?action=MyAccount" autocomplete="off">
     <span id="lblStatus" style="color:${status.color};font-weight:bold"> ${status.status}</span> 
     <span id="lblMessage" style="color:${status.color}">${status.message}</span><br/>
 	<span id="lblError" style="color:orange">${status.error}</span><br/>

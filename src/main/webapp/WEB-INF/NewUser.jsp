@@ -16,12 +16,12 @@
 	<div class="col">
 	<h2>Add Operator</h2> 
 	<div class="form-group">
-	<label for="username">Operator Login ID:</label>
-	<input name="username" type="text" id="username" class="form-control" placeholder="Enter user name" />
+	<label for="member">Member Code:</label>
+	<input name="member" type="text" id="member" class="form-control" placeholder="Scan member QR code" />
 	</div>
 	<div class="form-group">
-	<label for="member">Member ID:</label>
-	<input name="member" type="text" id="member" class="form-control" placeholder="Enter member ID" />
+	<label for="username">Operator Login ID:</label>
+	<input name="username" type="text" id="username" class="form-control" placeholder="Enter user name less than 20 characters" />
 	</div>
 	<div class="form-group">
 	<label for="txtPassword">Password:</label>

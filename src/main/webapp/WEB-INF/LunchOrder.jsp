@@ -15,7 +15,7 @@
 &nbsp;&nbsp; Total: $<span id="lblTotal">${status.total}</span>
 </h2>
 <br />     
-<form id="form1" method="post" action="${pageContext.request.contextPath}/Main?action=LunchOrder">
+<form id="form1" method="post" action="${pageContext.request.contextPath}/Main?action=LunchOrder" autocomplete="off">
     <span id="lblStatus" style="color:${status.color};font-weight:bold"> ${status.status}</span> 
     <span id="lblMessage" style="color:${status.color}">${status.message}</span><br/>
 	<span id="lblError" style="color:orange">${status.error}</span><br/>

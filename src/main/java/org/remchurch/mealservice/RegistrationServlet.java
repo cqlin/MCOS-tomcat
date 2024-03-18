@@ -98,7 +98,7 @@ public class RegistrationServlet  extends HttpServlet {
 				List<Map<String, Object>> result = ms.searchMember(email);
 				if(!result.isEmpty()) {
 					member = result.get(0);
-					setStatus(status, RED, ERROR, String.format("Email already registered to member:%s %s:%s",member.get("FIRST_NAME"), member.get("LAST_NAME"), member.get("MemberCode")));
+					setStatus(status, RED, ERROR, String.format("Email %s already registered to member:%s %s:%s",email, member.get("FIRST_NAME"), member.get("LAST_NAME"), member.get("MemberCode")));
 				}else {
 					int familyId = ms.insertFamily(email, phone, lastname.get(0), firstname.get(0));
 					for(int i=0; i<lastname.size(); i++)

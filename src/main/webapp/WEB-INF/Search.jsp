@@ -14,7 +14,7 @@
 
     <h2>Use Phone Number to Search Members</h2><br>
 
-<form id="form1" method="post" action="${pageContext.request.contextPath}/Main?action=Search">
+<form id="form1" method="post" action="${pageContext.request.contextPath}/Main?action=Search" autocomplete="off">
 	<div class="row">
 	<div class="col">
     <label for="txtBarcode">Phone Number(10 digits) Or Email:</label> 
